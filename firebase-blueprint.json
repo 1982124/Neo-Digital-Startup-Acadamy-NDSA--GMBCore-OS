@@ -1,0 +1,163 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Public user or prospect",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Distributor": {
+      "title": "Distributor",
+      "description": "NeoLife distributor with a smart link",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "shopUrl": { "type": "string" },
+        "paymentMethods": {
+          "type": "object",
+          "properties": {
+            "mobileMoney": { "type": "string" },
+            "chariow": { "type": "string" },
+            "maketou": { "type": "string" }
+          }
+        },
+        "category": { "type": "string", "enum": ["Santé", "Business", "Produits"] },
+        "smartCode": { "type": "string" },
+        "plan": { "type": "string", "enum": ["BASIC", "PREMIUM", "ELITE"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "whatsapp", "shopUrl", "smartCode"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Prospect captured by a distributor's smart link",
+      "type": "object",
+      "properties": {
+        "distributorId": { "type": "string" },
+        "name": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "needs": { "type": "string" },
+        "recommendations": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["NEW", "CONTACTED", "CONVERTED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["distributorId", "createdAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "AI Coach José conversation logs",
+      "type": "object",
+      "properties": {
+        "distributorId": { "type": "string" },
+        "visitorId": { "type": "string" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string", "enum": ["user", "model"] },
+              "text": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "summary": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["visitorId", "createdAt"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Community post for the GMBC-OS feed",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["SUCCESS", "TIP", "QUESTION"] },
+        "likes": { "type": "number" },
+        "commentCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "content", "type", "createdAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Comment on a community post",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "authorId", "authorName", "content", "createdAt"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Personal business goal for a distributor",
+      "type": "object",
+      "properties": {
+        "distributorId": { "type": "string" },
+        "title": { "type": "string" },
+        "target": { "type": "number" },
+        "current": { "type": "number" },
+        "deadline": { "type": "string", "format": "date-time" },
+        "type": { "type": "string", "enum": ["SALES", "LEADS", "RECRUITMENT"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["distributorId", "title", "target", "current", "type", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification for a distributor",
+      "type": "object",
+      "properties": {
+        "distributorId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["LEAD", "COMMUNITY", "SYSTEM", "ACHIEVEMENT"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["distributorId", "title", "message", "type", "read", "createdAt"]
+    },
+    "MarketingAsset": {
+      "title": "MarketingAsset",
+      "description": "AI generated marketing content",
+      "type": "object",
+      "properties": {
+        "distributorId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["POST", "IMAGE", "SCRIPT", "REELS", "WHATSAPP"] },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["distributorId", "title", "type", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "Public user profiles" },
+    "/distributors/{uid}": { "schema": "Distributor", "description": "Distributor profiles" },
+    "/distributors_by_code/{code}": { "schema": "object", "description": "Mapping from smartCode to distributorId" },
+    "/leads/{leadId}": { "schema": "Lead", "description": "Prospect leads" },
+    "/conversations/{convId}": { "schema": "Conversation", "description": "AI conversation logs" },
+    "/posts/{postId}": { "schema": "Post", "description": "Community posts" },
+    "/posts/{postId}/comments/{commentId}": { "schema": "Comment", "description": "Post comments" },
+    "/goals/{goalId}": { "schema": "Goal", "description": "Distributor goals" },
+    "/notifications/{notifId}": { "schema": "Notification", "description": "User notifications" },
+    "/marketing_assets/{assetId}": { "schema": "MarketingAsset", "description": "Saved marketing assets" }
+  }
+}

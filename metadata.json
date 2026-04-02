@@ -1,0 +1,8 @@
+{
+  "name": "Remix: GMBC-OS",
+  "description": "GMBC-OS : SaaS d\u0027intelligence commerciale pour distributeurs NeoLife. Inclut l\u0027IA Coach José avec voix, SmartLinks de prospection, et analytics avancés.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
